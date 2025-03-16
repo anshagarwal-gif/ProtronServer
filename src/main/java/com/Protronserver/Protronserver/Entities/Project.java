@@ -36,7 +36,6 @@ public class Project {
     private List<TimesheetTask> timesheetTasks;
 
     @OneToMany(mappedBy = "project")
-    @JsonBackReference
     private List<ProjectTeam> projectTeams;
 
     public Long getProjectId() {

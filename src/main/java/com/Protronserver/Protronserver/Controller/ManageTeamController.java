@@ -34,7 +34,7 @@ public class ManageTeamController {
         return ResponseEntity.ok(savedTeamMember);
     }
 
-    @PutMapping(value = "/edit/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/edit/{id}", method = RequestMethod.PUT, consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ProjectTeam> editTeamMember(@PathVariable Long id, @RequestBody ProjectTeam projectTeam) {
         System.out.println(id);
         System.out.println(projectTeam.getPricing());
