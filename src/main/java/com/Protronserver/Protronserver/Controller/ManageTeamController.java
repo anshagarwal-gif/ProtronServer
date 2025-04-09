@@ -1,8 +1,10 @@
 package com.Protronserver.Protronserver.Controller;
 
+import com.Protronserver.Protronserver.DTOs.TeamMemberRequestDTO;
 import com.Protronserver.Protronserver.Entities.ProjectTeam;
 import com.Protronserver.Protronserver.Service.ManageTeamService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,38 +20,24 @@ public class ManageTeamController {
     private ManageTeamService manageTeamService;
 
     @PostMapping("/add")
-    public ResponseEntity<ProjectTeam> addTeamMember(@RequestBody Map<String, Object> requestData) {
-        Double pricing = Double.valueOf(requestData.get("pricing").toString());
-        String empCode = requestData.get("empCode").toString();
-        String status = requestData.get("status").toString();
-        Long projectId = Long.valueOf(requestData.get("projectId").toString());
-        Long userId = Long.valueOf(requestData.get("userId").toString());
-
-        ProjectTeam projectTeam = new ProjectTeam();
-        projectTeam.setPricing(pricing);
-        projectTeam.setEmpCode(empCode);
-        projectTeam.setStatus(status);
-
-        ProjectTeam savedTeamMember = manageTeamService.addTeamMember(projectTeam, projectId, userId);
-        return ResponseEntity.ok(savedTeamMember);
+    public ResponseEntity<ProjectTeam> addTeamMember(@RequestBody TeamMemberRequestDTO dto) {
+        ProjectTeam saved = manageTeamService.createProjectTeam(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
-    @RequestMapping(value = "/edit/{id}", method = RequestMethod.PUT, consumes = MediaType.ALL_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ProjectTeam> editTeamMember(@PathVariable Long id, @RequestBody ProjectTeam projectTeam) {
-        System.out.println(id);
-        System.out.println(projectTeam.getPricing());
-        return ResponseEntity.ok(manageTeamService.editTeamMember(id, projectTeam));
+    @PutMapping("/edit/{id}")
+    public ProjectTeam update(@PathVariable Long id, @RequestBody TeamMemberRequestDTO dto) {
+        return manageTeamService.updateProjectTeam(id, dto);
     }
 
-    @PatchMapping("/status/{id}")
-    public ResponseEntity<ProjectTeam> changeMemberStatus(@PathVariable Long id, @RequestParam String status) {
-        return ResponseEntity.ok(manageTeamService.changeMemberStatus(id, status));
+    @PatchMapping("/{id}/status")
+    public ProjectTeam updateStatus(@PathVariable Long id, @RequestParam String status) {
+        return manageTeamService.updateStatus(id, status);
     }
 
-    @DeleteMapping("/remove/{id}")
-    public ResponseEntity<String> removeTeamMember(@PathVariable Long id) {
-        manageTeamService.removeTeamMember(id);
-        return ResponseEntity.ok("Member removed successfully");
+    @DeleteMapping("/delete/{id}")
+    public void delete(@PathVariable Long id) {
+        manageTeamService.deleteProjectTeam(id);
     }
 
     @GetMapping("/list/{projectId}")

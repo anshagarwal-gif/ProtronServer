@@ -10,8 +10,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "userId")
+//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "userId")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -23,8 +24,19 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
 
+    @Column(unique = true)
+    private String empCode;
+
     private String firstName;
     private String lastName;
+
+    public String getEmpCode() {
+        return empCode;
+    }
+
+    public void setEmpCode(String empCode) {
+        this.empCode = empCode;
+    }
 
     @Column(unique = true)
     private String email;
@@ -44,6 +56,13 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<Certificate> certificates;
+
+    @PrePersist
+    public void generateEmpCode() {
+        if (this.empCode == null || this.empCode.isEmpty()) {
+            this.empCode = "EMP" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+        }
+    }
 
     public Long getUserId() {
         return userId;

@@ -1,5 +1,6 @@
 package com.Protronserver.Protronserver.Entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -8,7 +9,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "projectTeamId")
+//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "projectTeamId")
 @Getter
 @Setter
 @Entity
@@ -29,48 +30,24 @@ public class ProjectTeam {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    public Long getProjectTeamId() {
-        return projectTeamId;
-    }
-
     public void setProjectTeamId(Long projectTeamId) {
         this.projectTeamId = projectTeamId;
-    }
-
-    public Double getPricing() {
-        return pricing;
     }
 
     public void setPricing(Double pricing) {
         this.pricing = pricing;
     }
 
-    public String getEmpCode() {
-        return empCode;
-    }
-
     public void setEmpCode(String empCode) {
         this.empCode = empCode;
-    }
-
-    public String getStatus() {
-        return status;
     }
 
     public void setStatus(String status) {
         this.status = status;
     }
 
-    public Project getProject() {
-        return project;
-    }
-
     public void setProject(Project project) {
         this.project = project;
-    }
-
-    public User getUser() {
-        return user;
     }
 
     public void setUser(User user) {

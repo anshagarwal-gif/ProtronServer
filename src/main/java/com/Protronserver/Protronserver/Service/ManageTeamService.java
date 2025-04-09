@@ -1,5 +1,6 @@
 package com.Protronserver.Protronserver.Service;
 
+import com.Protronserver.Protronserver.DTOs.TeamMemberRequestDTO;
 import com.Protronserver.Protronserver.Entities.Project;
 import com.Protronserver.Protronserver.Entities.ProjectTeam;
 import com.Protronserver.Protronserver.Entities.User;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ManageTeamService {
@@ -23,36 +25,56 @@ public class ManageTeamService {
     @Autowired
     private UserRepository userRepository;
 
-    public ProjectTeam addTeamMember(ProjectTeam projectTeam, Long projectId, Long userId) {
-        Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new RuntimeException("Project not found"));
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+    public ProjectTeam createProjectTeam(TeamMemberRequestDTO dto) {
+        ProjectTeam team = new ProjectTeam();
+        team.setPricing(dto.getPricing());
+        team.setEmpCode(dto.getEmpCode());
+        team.setStatus(dto.getStatus());
 
-        projectTeam.setProject(project);
-        projectTeam.setUser(user);
+        Optional<Project> project = projectRepository.findById(dto.getProjectId());
+        Optional<User> user = userRepository.findById(dto.getUserId());
 
-        return projectTeamRepository.save(projectTeam);
+        if (project.isPresent() && user.isPresent()) {
+            team.setProject(project.get());
+            team.setUser(user.get());
+            return projectTeamRepository.save(team);
+        }
+
+        throw new RuntimeException("Project or User not found");
     }
 
-    public ProjectTeam editTeamMember(Long id, ProjectTeam updatedProjectTeam) {
-        return projectTeamRepository.findById(id).map(teamMember -> {
-            teamMember.setPricing(updatedProjectTeam.getPricing());
-            teamMember.setEmpCode(updatedProjectTeam.getEmpCode());
-            teamMember.setStatus(updatedProjectTeam.getStatus());
-            return projectTeamRepository.save(teamMember);
-        }).orElseThrow(() -> new RuntimeException("Team member not found"));
+    public ProjectTeam getProjectTeamById(Long id) {
+        return projectTeamRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Team Member not found"));
     }
 
-    public ProjectTeam changeMemberStatus(Long id, String status) {
-        return projectTeamRepository.findById(id).map(teamMember -> {
-            teamMember.setStatus(status);
-            return projectTeamRepository.save(teamMember);
-        }).orElseThrow(() -> new RuntimeException("Team member not found"));
+    public ProjectTeam updateProjectTeam(Long id, TeamMemberRequestDTO dto) {
+        ProjectTeam team = getProjectTeamById(id);
+        team.setPricing(dto.getPricing());
+        team.setEmpCode(dto.getEmpCode());
+        team.setStatus(dto.getStatus());
+
+        Optional<Project> project = projectRepository.findById(dto.getProjectId());
+        Optional<User> user = userRepository.findById(dto.getUserId());
+
+        if (project.isPresent() && user.isPresent()) {
+            team.setProject(project.get());
+            team.setUser(user.get());
+            return projectTeamRepository.save(team);
+        }
+
+        throw new RuntimeException("Project or User not found");
     }
 
-    public void removeTeamMember(Long id) {
-        projectTeamRepository.deleteById(id);
+    public ProjectTeam updateStatus(Long teamMemberId, String status) {
+        ProjectTeam team = getProjectTeamById(teamMemberId);
+        team.setStatus(status);
+        return projectTeamRepository.save(team);
+    }
+
+    public void deleteProjectTeam(Long id) {
+        ProjectTeam team = getProjectTeamById(id);
+        projectTeamRepository.delete(team);
     }
 
     public List<ProjectTeam> getProjectTeam(Long projectId) {
