@@ -30,6 +30,9 @@ public class ManageTeamService {
         team.setPricing(dto.getPricing());
         team.setEmpCode(dto.getEmpCode());
         team.setStatus(dto.getStatus());
+        team.setUnit(dto.getUnit());
+        team.setTaskType(dto.getTaskType());
+        team.setEstimatedReleaseDate(dto.getEstimatedReleaseDate());
 
         Optional<Project> project = projectRepository.findById(dto.getProjectId());
         Optional<User> user = userRepository.findById(dto.getUserId());

@@ -6,6 +6,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
 //@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "projectTeamId")
 @Getter
 @Setter
@@ -18,11 +20,40 @@ public class ProjectTeam {
     private Double pricing;
     private String empCode;
     private String status;
+    private String taskType;
+    private String unit;
+
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate estimatedReleaseDate;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "project_id", nullable = false)
     @JsonIgnoreProperties({"team", "projectManager"})
     private Project project;
+
+    public LocalDate getEstimatedReleaseDate() {
+        return estimatedReleaseDate;
+    }
+
+    public void setEstimatedReleaseDate(LocalDate estimatedReleaseDate) {
+        this.estimatedReleaseDate = estimatedReleaseDate;
+    }
+
+    public String getTaskType() {
+        return taskType;
+    }
+
+    public void setTaskType(String taskType) {
+        this.taskType = taskType;
+    }
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
 
     public Long getProjectTeamId() {
         return projectTeamId;
