@@ -1,9 +1,6 @@
 package com.Protronserver.Protronserver.Entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -31,13 +28,15 @@ public class Project {
 
     @ManyToOne
     @JoinColumn(name = "project_manager_id")
+    @JsonIgnoreProperties("projectsManaged")
     private User projectManager;
 
     @OneToMany(mappedBy = "project")
     private List<TimesheetTask> timesheetTasks;
 
     @OneToMany(mappedBy = "project")
-    private List<ProjectTeam> projectTeams;
+    @JsonIgnoreProperties("project")
+    private List<ProjectTeam> projectTeam;
 
     public Long getProjectId() {
         return projectId;
@@ -103,11 +102,11 @@ public class Project {
         this.timesheetTasks = timesheetTasks;
     }
 
-    public List<ProjectTeam> getProjectTeams() {
-        return projectTeams;
+    public List<ProjectTeam> getProjectTeam() {
+        return projectTeam;
     }
 
-    public void setProjectTeams(List<ProjectTeam> projectTeams) {
-        this.projectTeams = projectTeams;
+    public void setProjectTeam(List<ProjectTeam> projectTeam) {
+        this.projectTeam = projectTeam;
     }
 }

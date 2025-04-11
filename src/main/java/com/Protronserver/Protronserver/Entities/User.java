@@ -1,16 +1,13 @@
 package com.Protronserver.Protronserver.Entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+
+import java.util.*;
 
 //@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "userId")
 @Getter
@@ -56,6 +53,30 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<Certificate> certificates;
+
+    @OneToMany(mappedBy = "projectManager")
+    @JsonIgnoreProperties("projectManager")
+    private List<Project> projectsManaged; // Projects managed by the user
+
+    public List<Project> getProjectsManaged() {
+        return projectsManaged;
+    }
+
+    public void setProjectsManaged(List<Project> projectsManaged) {
+        this.projectsManaged = projectsManaged;
+    }
+
+    @OneToMany(mappedBy = "user")
+    @JsonIgnoreProperties("user")
+    private List<ProjectTeam> projectTeams; // Projects user is part of as a team member
+
+    public List<ProjectTeam> getProjectTeams() {
+        return projectTeams;
+    }
+
+    public void setProjectTeams(List<ProjectTeam> projectTeams) {
+        this.projectTeams = projectTeams;
+    }
 
     @PrePersist
     public void generateEmpCode() {
@@ -159,4 +180,25 @@ public class User {
     public void setCertificates(List<Certificate> certificates) {
         this.certificates = certificates;
     }
+
+//    @Transient
+//    @JsonProperty("projects") // this will add the field to the JSON response
+//    @JsonManagedReference
+//    public List<Project> getAllProjects() {
+//        Set<Project> allProjects = new HashSet<>();
+//
+//        if (this.projects != null) {
+//            allProjects.addAll(this.projects); // As manager
+//        }
+//
+//        if (this.projectTeams != null) {
+//            for (ProjectTeam pt : this.projectTeams) {
+//                if (pt.getProject() != null) {
+//                    allProjects.add(pt.getProject()); // As team member
+//                }
+//            }
+//        }
+//
+//        return new ArrayList<>(allProjects);
+//    }
 }
