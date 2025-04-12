@@ -1,7 +1,10 @@
 package com.Protronserver.Protronserver.DTOs;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -10,6 +13,35 @@ public class TeamMemberRequestDTO {
     private String empCode;
     private String status;
     private Long projectId;
+    private String taskType;
+    private String unit;
+
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate estimatedReleaseDate;
+
+    public LocalDate getEstimatedReleaseDate() {
+        return estimatedReleaseDate;
+    }
+
+    public void setEstimatedReleaseDate(LocalDate estimatedReleaseDate) {
+        this.estimatedReleaseDate = estimatedReleaseDate;
+    }
+
+    public String getTaskType() {
+        return taskType;
+    }
+
+    public void setTaskType(String taskType) {
+        this.taskType = taskType;
+    }
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
 
     public Double getPricing() {
         return pricing;
