@@ -4,10 +4,13 @@ import com.Protronserver.Protronserver.DTOs.LoginRequest;
 import com.Protronserver.Protronserver.DTOs.UserSignUpDTO;
 import com.Protronserver.Protronserver.Entities.User;
 import com.Protronserver.Protronserver.Repository.UserRepository;
+import com.Protronserver.Protronserver.Utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -15,6 +18,9 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private JwtUtil jwtUtil;
 
     private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -48,19 +54,24 @@ public class UserService {
     }
 
 
-    public String loginUser(LoginRequest loginRequest) {
+    public Map<String, String> loginUser(LoginRequest loginRequest) {
         Optional<User> userOptional = userRepository.findByEmail(loginRequest.getEmail());
 
         if (userOptional.isPresent()) {
             User user = userOptional.get();
 
             if (passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-                return "Login successful for user: " + user.getFirstName();
+                String token = jwtUtil.generateToken(user.getEmail());
+                Map<String, String> response = new HashMap<>();
+                response.put("token", token);
+                response.put("email", user.getEmail());
+                response.put("empCode", user.getEmpCode());
+                return response;
             } else {
-                return "Invalid credentials";
+                throw new RuntimeException("Invalid credentials");
             }
         } else {
-            return "User not found with this email";
+            throw new RuntimeException("User not found with this email");
         }
     }
 }
