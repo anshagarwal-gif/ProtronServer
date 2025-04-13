@@ -54,7 +54,7 @@ public class ManageProjectService {
                 teamMember.setProject(savedProject);
                 teamMember.setUser(user);
                 teamMember.setPricing(memberDTO.getPricing());
-                teamMember.setEmpCode(memberDTO.getEmpCode());
+                teamMember.setEmpCode(user.getEmpCode());
                 teamMember.setStatus(memberDTO.getStatus() != null ? memberDTO.getStatus() : "active");
                 teamMember.setTaskType(memberDTO.getTaskType());
                 teamMember.setUnit(memberDTO.getUnit());

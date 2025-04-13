@@ -27,6 +27,14 @@ public class Project {
     private Double projectCost;
     private String tenent;
 
+    public String getTenent() {
+        return tenent;
+    }
+
+    public void setTenent(String tenent) {
+        this.tenent = tenent;
+    }
+
     @ManyToOne
     @JoinColumn(name = "project_manager_id")
     @JsonIgnoreProperties("projectsManaged")
