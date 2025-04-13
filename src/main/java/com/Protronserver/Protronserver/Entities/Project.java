@@ -25,6 +25,7 @@ public class Project {
     private Date startDate;
     private Date endDate;
     private Double projectCost;
+    private String tenent;
 
     @ManyToOne
     @JoinColumn(name = "project_manager_id")
