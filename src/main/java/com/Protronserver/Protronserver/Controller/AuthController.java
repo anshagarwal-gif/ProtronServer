@@ -9,16 +9,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -33,6 +27,9 @@ public class AuthController {
 
     @Autowired
     private OtpStore otpStore;
+
+    // Keeps track of OTP verification status temporarily
+    private final Set<String> verifiedEmails = new HashSet<>();
 
     BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -74,21 +71,37 @@ Team Protron
         return ResponseEntity.ok("OTP sent to your email");
     }
 
-    @PostMapping("/reset-password")
-    public ResponseEntity<?> resetPassword(@RequestBody Map<String, String> request) {
+    @PostMapping("/verify-otp")
+    public ResponseEntity<?> verifyOtp(@RequestBody Map<String, String> request) {
         String email = request.get("email");
         String otp = request.get("otp");
-        String newPassword = request.get("newPassword");
 
         if (!otpStore.validateOtp(email, otp)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid or expired OTP");
         }
 
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+        // Mark this email as verified
+        verifiedEmails.add(email);
+        return ResponseEntity.ok("OTP verified successfully");
+    }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<?> changePassword(@RequestBody Map<String, String> request) {
+        String email = request.get("email");
+        String newPassword = request.get("newPassword");
+
+        if (!verifiedEmails.contains(email)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("OTP not verified");
+        }
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
 
+        // Clear OTP and verification status
         otpStore.removeOtp(email);
+        verifiedEmails.remove(email);
 
         return ResponseEntity.ok("Password successfully updated");
     }

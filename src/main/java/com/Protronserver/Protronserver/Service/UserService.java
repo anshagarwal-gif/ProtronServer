@@ -6,6 +6,8 @@ import com.Protronserver.Protronserver.Entities.User;
 import com.Protronserver.Protronserver.Repository.UserRepository;
 import com.Protronserver.Protronserver.Utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +25,9 @@ public class UserService {
 
     @Autowired
     private JwtUtil jwtUtil;
+
+    @Autowired
+    private MailSender mailSender;
 
     private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -52,7 +57,41 @@ public class UserService {
         // No role assigned for now
         user.setRole(null);
 
-        return userRepository.save(user);
+        User savedUser = userRepository.save(user);
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(user.getEmail());
+        message.setSubject("Welcome to Protron - Your Account Details");
+
+        String content = """
+Hi %s,
+
+Welcome to Protron! Your account has been successfully created by the administrator.
+
+Here are your login credentials:
+Email: %s
+Password: %s
+
+For your security, we recommend changing your password after your first login.
+
+If you have any questions or face any issues logging in, feel free to contact our support team.
+
+We're excited to have you onboard!
+
+Regards,  
+Team Protron
+""".formatted(
+                user.getDisplayName() != null ? user.getDisplayName() : user.getFirstName(),
+                user.getEmail(),
+                dto.getPassword()
+        );
+
+        message.setText(content);
+        message.setFrom("dopahiya.feedback@gmail.com");
+        mailSender.send(message);
+
+
+        return savedUser;
     }
 
 
