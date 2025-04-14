@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -45,7 +47,7 @@ public class UserService {
         user.setState(dto.getState());
         user.setZipCode(dto.getZipCode());
         user.setCountry(dto.getCountry());
-        user.setDateOfJoining(dto.getDateOfJoining());
+        user.setDateOfJoining(new Date());
 
         // No role assigned for now
         user.setRole(null);

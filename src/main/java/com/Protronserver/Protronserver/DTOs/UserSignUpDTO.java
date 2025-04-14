@@ -25,8 +25,8 @@ public class UserSignUpDTO {
     private String state;
     private String zipCode;
     private String country;
-    private Date dateOfJoining;
-    private Long roleId;
+//    private Date dateOfJoining;
+//    private Long roleId;
 
     public String getFirstName() {
         return firstName;
@@ -146,21 +146,5 @@ public class UserSignUpDTO {
 
     public void setCountry(String country) {
         this.country = country;
-    }
-
-    public Date getDateOfJoining() {
-        return dateOfJoining;
-    }
-
-    public void setDateOfJoining(Date dateOfJoining) {
-        this.dateOfJoining = dateOfJoining;
-    }
-
-    public Long getRoleId() {
-        return roleId;
-    }
-
-    public void setRoleId(Long roleId) {
-        this.roleId = roleId;
     }
 }
