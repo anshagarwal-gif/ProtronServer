@@ -25,7 +25,9 @@ public class User {
     private String empCode;
 
     private String firstName;
+    private String middleName;
     private String lastName;
+    private String displayName;
 
     public String getEmpCode() {
         return empCode;
@@ -43,6 +45,17 @@ public class User {
     private Date lastLogin;
     private String profilePhoto;
     private Date dateOfJoining;
+
+    private String mobilePhone;
+    private String lanPhone;
+
+    private String addressLine1;
+    private String addressLine2;
+    private String addressLine3;
+    private String city;
+    private String state;
+    private String zipCode;
+    private String country;
 
     @ManyToOne
     @JoinColumn(name = "role_id")
@@ -181,24 +194,91 @@ public class User {
         this.certificates = certificates;
     }
 
-//    @Transient
-//    @JsonProperty("projects") // this will add the field to the JSON response
-//    @JsonManagedReference
-//    public List<Project> getAllProjects() {
-//        Set<Project> allProjects = new HashSet<>();
-//
-//        if (this.projects != null) {
-//            allProjects.addAll(this.projects); // As manager
-//        }
-//
-//        if (this.projectTeams != null) {
-//            for (ProjectTeam pt : this.projectTeams) {
-//                if (pt.getProject() != null) {
-//                    allProjects.add(pt.getProject()); // As team member
-//                }
-//            }
-//        }
-//
-//        return new ArrayList<>(allProjects);
-//    }
+    public String getMiddleName() {
+        return middleName;
+    }
+
+    public void setMiddleName(String middleName) {
+        this.middleName = middleName;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public String getMobilePhone() {
+        return mobilePhone;
+    }
+
+    public void setMobilePhone(String mobilePhone) {
+        this.mobilePhone = mobilePhone;
+    }
+
+    public String getLanPhone() {
+        return lanPhone;
+    }
+
+    public void setLanPhone(String lanPhone) {
+        this.lanPhone = lanPhone;
+    }
+
+    public String getAddressLine1() {
+        return addressLine1;
+    }
+
+    public void setAddressLine1(String addressLine1) {
+        this.addressLine1 = addressLine1;
+    }
+
+    public String getAddressLine2() {
+        return addressLine2;
+    }
+
+    public void setAddressLine2(String addressLine2) {
+        this.addressLine2 = addressLine2;
+    }
+
+    public String getAddressLine3() {
+        return addressLine3;
+    }
+
+    public void setAddressLine3(String addressLine3) {
+        this.addressLine3 = addressLine3;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getZipCode() {
+        return zipCode;
+    }
+
+    public void setZipCode(String zipCode) {
+        this.zipCode = zipCode;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
 }

@@ -11,7 +11,7 @@ import java.time.LocalDate;
 public class TeamMemberRequestDTO {
     private Double pricing;
     private String empCode;
-    private String status;
+    private String status = "active";
     private Long projectId;
     private String taskType;
     private String unit;

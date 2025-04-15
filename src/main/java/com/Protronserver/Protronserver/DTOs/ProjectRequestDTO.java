@@ -1,6 +1,7 @@
 package com.Protronserver.Protronserver.DTOs;
 
 import java.util.Date;
+import java.util.List;
 
 public class ProjectRequestDTO {
     private String projectName;
@@ -9,6 +10,16 @@ public class ProjectRequestDTO {
     private Date endDate;
     private Double projectCost;
     private Long projectManagerId;
+    private String tenent;
+    private List<TeamMemberRequestDTO> projectTeam;
+
+    public List<TeamMemberRequestDTO> getProjectTeam() {
+        return projectTeam;
+    }
+
+    public void setProjectTeam(List<TeamMemberRequestDTO> projectTeam) {
+        this.projectTeam = projectTeam;
+    }
 
     public String getProjectName() {
         return projectName;
@@ -16,6 +27,14 @@ public class ProjectRequestDTO {
 
     public void setProjectName(String projectName) {
         this.projectName = projectName;
+    }
+
+    public String getTenent() {
+        return tenent;
+    }
+
+    public void setTenent(String tenent) {
+        this.tenent = tenent;
     }
 
     public String getProjectIcon() {
@@ -58,4 +77,3 @@ public class ProjectRequestDTO {
         this.projectManagerId = projectManagerId;
     }
 }
-
