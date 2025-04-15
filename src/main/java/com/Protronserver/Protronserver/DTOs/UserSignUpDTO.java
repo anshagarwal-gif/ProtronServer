@@ -31,6 +31,14 @@ public class UserSignUpDTO {
     // private Date dateOfJoining;
     // private Long roleId;
 
+    public MultipartFile getProfilePhoto() {
+        return profilePhoto;
+    }
+
+    public void setProfilePhoto(MultipartFile profilePhoto) {
+        this.profilePhoto = profilePhoto;
+    }
+
     public String getFirstName() {
         return firstName;
     }

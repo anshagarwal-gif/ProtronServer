@@ -1,5 +1,6 @@
 package com.Protronserver.Protronserver.Controller;
 
+import com.Protronserver.Protronserver.DTOs.TeamMemberEditDTO;
 import com.Protronserver.Protronserver.DTOs.TeamMemberRequestDTO;
 import com.Protronserver.Protronserver.Entities.ProjectTeam;
 import com.Protronserver.Protronserver.Service.ManageTeamService;
@@ -26,7 +27,7 @@ public class ManageTeamController {
     }
 
     @PutMapping("/edit/{id}")
-    public ProjectTeam update(@PathVariable Long id, @RequestBody TeamMemberRequestDTO dto) {
+    public ProjectTeam update(@PathVariable Long id, @RequestBody TeamMemberEditDTO dto) {
         return manageTeamService.updateProjectTeam(id, dto);
     }
 
