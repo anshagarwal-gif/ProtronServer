@@ -11,6 +11,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashMap;
@@ -53,7 +54,15 @@ public class UserService {
         user.setZipCode(dto.getZipCode());
         user.setCountry(dto.getCountry());
         user.setDateOfJoining(new Date());
-
+        user.setCost(dto.getCost());
+        user.setUnit(dto.getUnit());
+        if (dto.getProfilePhoto() != null && !dto.getProfilePhoto().isEmpty()) {
+            try {
+                user.setPhoto(dto.getProfilePhoto().getBytes());
+            } catch (IOException e) {
+                throw new IllegalArgumentException("Failed to process photo upload", e);
+            }
+        }
         // No role assigned for now
         user.setRole(null);
 
@@ -64,36 +73,33 @@ public class UserService {
         message.setSubject("Welcome to Protron - Your Account Details");
 
         String content = """
-Hi %s,
+                Hi %s,
 
-Welcome to Protron! Your account has been successfully created by the administrator.
+                Welcome to Protron! Your account has been successfully created by the administrator.
 
-Here are your login credentials:
-Email: %s
-Password: %s
+                Here are your login credentials:
+                Email: %s
+                Password: %s
 
-For your security, we recommend changing your password after your first login.
+                For your security, we recommend changing your password after your first login.
 
-If you have any questions or face any issues logging in, feel free to contact our support team.
+                If you have any questions or face any issues logging in, feel free to contact our support team.
 
-We're excited to have you onboard!
+                We're excited to have you onboard!
 
-Regards,  
-Team Protron
-""".formatted(
+                Regards,
+                Team Protron
+                """.formatted(
                 user.getDisplayName() != null ? user.getDisplayName() : user.getFirstName(),
                 user.getEmail(),
-                dto.getPassword()
-        );
+                dto.getPassword());
 
         message.setText(content);
         message.setFrom("dopahiya.feedback@gmail.com");
         mailSender.send(message);
 
-
         return savedUser;
     }
-
 
     public Map<String, String> loginUser(LoginRequest loginRequest) {
         Optional<User> userOptional = userRepository.findByEmail(loginRequest.getEmail());

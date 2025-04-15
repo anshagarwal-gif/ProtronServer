@@ -3,7 +3,7 @@ package com.Protronserver.Protronserver.DTOs;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-
+import org.springframework.web.multipart.MultipartFile;
 import java.util.Date;
 
 @Getter
@@ -25,8 +25,11 @@ public class UserSignUpDTO {
     private String state;
     private String zipCode;
     private String country;
-//    private Date dateOfJoining;
-//    private Long roleId;
+    private String cost;
+    private String unit;
+    private MultipartFile profilePhoto;
+    // private Date dateOfJoining;
+    // private Long roleId;
 
     public String getFirstName() {
         return firstName;
@@ -34,6 +37,22 @@ public class UserSignUpDTO {
 
     public void setFirstName(String firstName) {
         this.firstName = firstName;
+    }
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
+
+    public String getCost() {
+        return cost;
+    }
+
+    public void setCost(String cost) {
+        this.cost = cost;
     }
 
     public String getMiddleName() {
