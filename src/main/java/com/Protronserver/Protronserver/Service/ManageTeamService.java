@@ -1,5 +1,6 @@
 package com.Protronserver.Protronserver.Service;
 
+import com.Protronserver.Protronserver.DTOs.TeamMemberEditDTO;
 import com.Protronserver.Protronserver.DTOs.TeamMemberRequestDTO;
 import com.Protronserver.Protronserver.Entities.Project;
 import com.Protronserver.Protronserver.Entities.ProjectTeam;
@@ -51,22 +52,13 @@ public class ManageTeamService {
                 .orElseThrow(() -> new RuntimeException("Team Member not found"));
     }
 
-    public ProjectTeam updateProjectTeam(Long id, TeamMemberRequestDTO dto) {
+    public ProjectTeam updateProjectTeam(Long id, TeamMemberEditDTO dto) {
         ProjectTeam team = getProjectTeamById(id);
         team.setPricing(dto.getPricing());
-        team.setEmpCode(dto.getEmpCode());
-        team.setStatus(dto.getStatus());
+        team.setUnit(dto.getUnit());
+        team.setEstimatedReleaseDate(dto.getEstimatedReleaseDate());
 
-        Optional<Project> project = projectRepository.findById(dto.getProjectId());
-        Optional<User> user = userRepository.findById(dto.getUserId());
-
-        if (project.isPresent() && user.isPresent()) {
-            team.setProject(project.get());
-            team.setUser(user.get());
-            return projectTeamRepository.save(team);
-        }
-
-        throw new RuntimeException("Project or User not found");
+        return projectTeamRepository.save(team);
     }
 
     public ProjectTeam updateStatus(Long teamMemberId, String status) {

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.MediaType;
 
 import java.util.HashMap;
 import java.util.List;
@@ -25,8 +26,8 @@ public class ManageUserController {
     @Autowired
     private UserService userService;
 
-    @PostMapping("/signup")
-    public ResponseEntity<?> signupUser(@RequestBody UserSignUpDTO userSignUpDTO) {
+    @PostMapping(value = "/signup", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> signupUser(@ModelAttribute UserSignUpDTO userSignUpDTO) {
         try {
             User createdUser = userService.signupUser(userSignUpDTO);
             return ResponseEntity.ok(createdUser);
@@ -46,7 +47,7 @@ public class ManageUserController {
     }
 
     @GetMapping
-    private List<User> getAllUsers(){
+    private List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
@@ -67,4 +68,21 @@ public class ManageUserController {
         return userRepository.findByEmpCode(empCode);
     }
 
+    // In your UserController.java
+    @GetMapping("/{userId}/photo")
+    public ResponseEntity<byte[]> getUserPhoto(@PathVariable Long userId) {
+        try {
+            User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+
+            if (user.getPhoto() == null) {
+                return ResponseEntity.notFound().build();
+            }
+
+            return ResponseEntity.ok()
+                    .contentType(MediaType.IMAGE_JPEG) // Adjust content type if needed
+                    .body(user.getPhoto());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }

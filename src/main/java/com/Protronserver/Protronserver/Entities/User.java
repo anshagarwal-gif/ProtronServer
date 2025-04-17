@@ -28,6 +28,26 @@ public class User {
     private String middleName;
     private String lastName;
     private String displayName;
+    private String cost;
+    private String unit;
+    @Lob
+    private byte[] photo;
+
+    public byte[] getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(byte[] photo) {
+        this.photo = photo;
+    }
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
 
     public String getEmpCode() {
         return empCode;
@@ -35,6 +55,14 @@ public class User {
 
     public void setEmpCode(String empCode) {
         this.empCode = empCode;
+    }
+
+    public String getCost() {
+        return cost;
+    }
+
+    public void setCost(String cost) {
+        this.cost = cost;
     }
 
     @Column(unique = true)
