@@ -4,6 +4,8 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Getter
@@ -30,6 +32,38 @@ public class UserSignUpDTO {
     private MultipartFile profilePhoto;
     // private Date dateOfJoining;
     // private Long roleId;
+
+    // Added timestamp fields
+    private LocalDateTime startTimestamp;
+    private LocalDateTime endTimestamp;
+
+    // Added last updated by field
+    private String lastUpdatedBy;
+
+    // Getters and setters for the new fields
+    public LocalDateTime getStartTimestamp() {
+        return startTimestamp;
+    }
+
+    public void setStartTimestamp(LocalDateTime startTimestamp) {
+        this.startTimestamp = startTimestamp;
+    }
+
+    public LocalDateTime getEndTimestamp() {
+        return endTimestamp;
+    }
+
+    public void setEndTimestamp(LocalDateTime endTimestamp) {
+        this.endTimestamp = endTimestamp;
+    }
+
+    public String getLastUpdatedBy() {
+        return lastUpdatedBy;
+    }
+
+    public void setLastUpdatedBy(String lastUpdatedBy) {
+        this.lastUpdatedBy = lastUpdatedBy;
+    }
 
     public MultipartFile getProfilePhoto() {
         return profilePhoto;

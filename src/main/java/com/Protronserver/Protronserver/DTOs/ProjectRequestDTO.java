@@ -1,5 +1,6 @@
 package com.Protronserver.Protronserver.DTOs;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -12,6 +13,37 @@ public class ProjectRequestDTO {
     private Long projectManagerId;
     private String tenent;
     private List<TeamMemberRequestDTO> projectTeam;
+    // Added timestamp fields
+    private LocalDateTime startTimestamp;
+    private LocalDateTime endTimestamp;
+
+    // Added last updated by field
+    private String lastUpdatedBy;
+
+    // Getters and setters for the new fields
+    public LocalDateTime getStartTimestamp() {
+        return startTimestamp;
+    }
+
+    public void setStartTimestamp(LocalDateTime startTimestamp) {
+        this.startTimestamp = startTimestamp;
+    }
+
+    public LocalDateTime getEndTimestamp() {
+        return endTimestamp;
+    }
+
+    public void setEndTimestamp(LocalDateTime endTimestamp) {
+        this.endTimestamp = endTimestamp;
+    }
+
+    public String getLastUpdatedBy() {
+        return lastUpdatedBy;
+    }
+
+    public void setLastUpdatedBy(String lastUpdatedBy) {
+        this.lastUpdatedBy = lastUpdatedBy;
+    }
 
     public List<TeamMemberRequestDTO> getProjectTeam() {
         return projectTeam;

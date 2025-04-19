@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -15,6 +16,37 @@ public class TeamMemberRequestDTO {
     private Long projectId;
     private String taskType;
     private String unit;
+    // Added timestamp fields
+    private LocalDateTime startTimestamp;
+    private LocalDateTime endTimestamp;
+
+    // Added last updated by field
+    private String lastUpdatedBy;
+
+    // Getters and setters for the new fields
+    public LocalDateTime getStartTimestamp() {
+        return startTimestamp;
+    }
+
+    public void setStartTimestamp(LocalDateTime startTimestamp) {
+        this.startTimestamp = startTimestamp;
+    }
+
+    public LocalDateTime getEndTimestamp() {
+        return endTimestamp;
+    }
+
+    public void setEndTimestamp(LocalDateTime endTimestamp) {
+        this.endTimestamp = endTimestamp;
+    }
+
+    public String getLastUpdatedBy() {
+        return lastUpdatedBy;
+    }
+
+    public void setLastUpdatedBy(String lastUpdatedBy) {
+        this.lastUpdatedBy = lastUpdatedBy;
+    }
 
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate estimatedReleaseDate;
