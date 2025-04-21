@@ -1,6 +1,7 @@
 package com.Protronserver.Protronserver.Service;
 
 import com.Protronserver.Protronserver.DTOs.ProjectRequestDTO;
+import com.Protronserver.Protronserver.DTOs.ProjectUpdateDTO;
 import com.Protronserver.Protronserver.DTOs.TeamMemberRequestDTO;
 import com.Protronserver.Protronserver.Entities.Project;
 import com.Protronserver.Protronserver.Entities.ProjectTeam;
@@ -9,11 +10,12 @@ import com.Protronserver.Protronserver.Repository.ProjectRepository;
 import com.Protronserver.Protronserver.Repository.ProjectTeamRepository;
 import com.Protronserver.Protronserver.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ManageProjectService {
@@ -37,9 +39,14 @@ public class ManageProjectService {
 
         // fetch the actual User object from the DB
         System.out.println(request.getProjectManagerId());
-        User manager = userRepository.findById(request.getProjectManagerId())
+        User manager = userRepository.findByUserIdAndEndTimestampIsNull(request.getProjectManagerId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
         project.setProjectManager(manager);
+
+        project.setStartTimestamp(LocalDateTime.now());
+        project.setEndTimestamp(null);
+        project.setLastUpdatedBy(null);
+
         Project savedProject = projectRepository.save(project);
 
         // If project team members are provided, save them
@@ -47,7 +54,7 @@ public class ManageProjectService {
             List<ProjectTeam> teamMembers = new ArrayList<>();
 
             for (TeamMemberRequestDTO memberDTO : request.getProjectTeam()) {
-                User user = userRepository.findById(memberDTO.getUserId())
+                User user = userRepository.findByUserIdAndEndTimestampIsNull(memberDTO.getUserId())
                         .orElseThrow(() -> new RuntimeException("Team member not found"));
 
                 ProjectTeam teamMember = new ProjectTeam();
@@ -70,12 +77,47 @@ public class ManageProjectService {
     }
 
     public List<Project> getAllProjects() {
-        return projectRepository.findAll();
+        return projectRepository.findByEndTimestampIsNull();
     }
 
     public Project getProjectById(Long projectId) {
-        return projectRepository.findById(projectId)
+        return projectRepository.findByProjectIdAndEndTimestampIsNull(projectId)
                 .orElseThrow(() -> new RuntimeException("Project not found with ID: " + projectId));
+    }
+
+    public Project updateProject(Long id,ProjectUpdateDTO request) {
+        Project existingProject = projectRepository.findByProjectIdAndEndTimestampIsNull(id)
+                .orElseThrow(() -> new RuntimeException("Project not found with ID: " + id));
+
+        // Mark old project as inactive (soft delete)
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof User user) {
+            existingProject.setLastUpdatedBy(user.getEmail());
+            existingProject.setEndTimestamp(LocalDateTime.now());
+        }
+        projectRepository.save(existingProject);
+
+        // Create a new version of the project with updated fields
+        Project updatedProject = new Project();
+        updatedProject.setProjectName(request.getProjectName() != null ? request.getProjectName() : existingProject.getProjectName());
+        updatedProject.setProjectIcon(request.getProjectIcon() != null ? request.getProjectIcon() : existingProject.getProjectIcon());
+        updatedProject.setStartDate(request.getStartDate() != null ? request.getStartDate() : existingProject.getStartDate());
+        updatedProject.setEndDate(request.getEndDate() != null ? request.getEndDate() : existingProject.getEndDate());
+        updatedProject.setProjectCost(request.getProjectCost() != null ? request.getProjectCost() : existingProject.getProjectCost());
+        updatedProject.setStartTimestamp(LocalDateTime.now());
+        updatedProject.setEndTimestamp(null);
+
+        // Set manager if ID is passed
+        if (request.getProjectManagerId() != null) {
+            User manager = userRepository.findByUserIdAndEndTimestampIsNull(request.getProjectManagerId())
+                    .orElseThrow(() -> new RuntimeException("Manager not found"));
+            updatedProject.setProjectManager(manager);
+        } else {
+            updatedProject.setProjectManager(existingProject.getProjectManager());
+        }
+
+        // Save new project
+        return projectRepository.save(updatedProject);
     }
 
 }

@@ -1,6 +1,7 @@
 package com.Protronserver.Protronserver.Controller;
 
 import com.Protronserver.Protronserver.DTOs.ProjectRequestDTO;
+import com.Protronserver.Protronserver.DTOs.ProjectUpdateDTO;
 import com.Protronserver.Protronserver.Entities.Project;
 import com.Protronserver.Protronserver.Service.ManageProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,11 @@ public class ManageProjectController {
     @GetMapping("/{id}")
     public Project getProjectById(@PathVariable("id") Long id) {
         return manageProjectService.getProjectById(id);
+    }
+
+    @PutMapping("/edit/{id}")
+    public Project updateProject(@PathVariable("id") Long id, @RequestBody ProjectUpdateDTO projectUpdateDTO){
+        return manageProjectService.updateProject(id, projectUpdateDTO);
     }
 
 }
