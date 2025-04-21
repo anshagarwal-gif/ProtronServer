@@ -12,7 +12,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -102,7 +101,7 @@ public class UserService {
     }
 
     public Map<String, String> loginUser(LoginRequest loginRequest) {
-        Optional<User> userOptional = userRepository.findByEmail(loginRequest.getEmail());
+        Optional<User> userOptional = userRepository.findByEmailAndEndTimestampIsNull(loginRequest.getEmail());
 
         if (userOptional.isPresent()) {
             User user = userOptional.get();

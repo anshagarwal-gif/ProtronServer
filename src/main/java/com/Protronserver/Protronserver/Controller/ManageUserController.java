@@ -48,24 +48,24 @@ public class ManageUserController {
 
     @GetMapping
     private List<User> getAllUsers() {
-        return userRepository.findAll();
+        return userRepository.findByEndTimestampIsNull();
     }
 
     @GetMapping("/firstname/{firstName}")
     public List<User> getUsersByFirstName(@PathVariable String firstName) {
-        return userRepository.findByFirstNameIgnoreCase(firstName);
+        return userRepository.findByFirstNameIgnoreCaseAndEndTimestampIsNull(firstName);
     }
 
     // Fetch user by email
     @GetMapping("/email/{email}")
     public Optional<User> getUserByEmail(@PathVariable String email) {
-        return userRepository.findByEmail(email);
+        return userRepository.findByEmailAndEndTimestampIsNull(email);
     }
 
     // Fetch user by empCode
     @GetMapping("/empcode/{empCode}")
     public Optional<User> getUserByEmpCode(@PathVariable String empCode) {
-        return userRepository.findByEmpCode(empCode);
+        return userRepository.findByEmpCodeAndEndTimestampIsNull(empCode);
     }
 
     // In your UserController.java

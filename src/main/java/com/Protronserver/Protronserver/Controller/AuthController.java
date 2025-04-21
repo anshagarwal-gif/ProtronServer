@@ -36,7 +36,7 @@ public class AuthController {
     @PostMapping("/send-otp")
     public ResponseEntity<?> sendOtp(@RequestBody Map<String, String> request) {
         String email = request.get("email");
-        Optional<User> userOpt = userRepository.findByEmail(email);
+        Optional<User> userOpt = userRepository.findByEmailAndEndTimestampIsNull(email);
         if (userOpt.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Email not found");
         }
@@ -94,7 +94,7 @@ Team Protron
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("OTP not verified");
         }
 
-        User user = userRepository.findByEmail(email)
+        User user = userRepository.findByEmailAndEndTimestampIsNull(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);

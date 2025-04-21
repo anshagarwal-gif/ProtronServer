@@ -9,8 +9,10 @@ import com.Protronserver.Protronserver.Repository.ProjectRepository;
 import com.Protronserver.Protronserver.Repository.ProjectTeamRepository;
 import com.Protronserver.Protronserver.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,6 +36,9 @@ public class ManageTeamService {
         team.setUnit(dto.getUnit());
         team.setTaskType(dto.getTaskType());
         team.setEstimatedReleaseDate(dto.getEstimatedReleaseDate());
+        team.setStartTimestamp(dto.getStartTimestamp() != null ? dto.getStartTimestamp() : LocalDateTime.now());
+        team.setEndTimestamp(dto.getEndTimestamp());
+        team.setLastUpdatedBy(dto.getLastUpdatedBy());
 
         Optional<Project> project = projectRepository.findById(dto.getProjectId());
         Optional<User> user = userRepository.findById(dto.getUserId());
@@ -48,32 +53,71 @@ public class ManageTeamService {
     }
 
     public ProjectTeam getProjectTeamById(Long id) {
-        return projectTeamRepository.findById(id)
+        return projectTeamRepository.findByProjectTeamIdAndEndTimestampIsNull(id)
                 .orElseThrow(() -> new RuntimeException("Team Member not found"));
     }
 
     public ProjectTeam updateProjectTeam(Long id, TeamMemberEditDTO dto) {
         ProjectTeam team = getProjectTeamById(id);
-        team.setPricing(dto.getPricing());
-        team.setUnit(dto.getUnit());
-        team.setEstimatedReleaseDate(dto.getEstimatedReleaseDate());
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof User user) {
+            team.setLastUpdatedBy(user.getEmail());
+            team.setEndTimestamp(LocalDateTime.now());
+        }
 
-        return projectTeamRepository.save(team);
+        projectTeamRepository.save(team);
+
+        ProjectTeam newVersionMember = new ProjectTeam();
+        newVersionMember.setPricing(dto.getPricing());
+        newVersionMember.setUnit(dto.getUnit());
+        newVersionMember.setEstimatedReleaseDate(dto.getEstimatedReleaseDate());
+        newVersionMember.setEmpCode(team.getEmpCode());
+        newVersionMember.setStatus(team.getStatus());
+        newVersionMember.setTaskType(team.getTaskType());
+        newVersionMember.setStartTimestamp(LocalDateTime.now());
+        newVersionMember.setProject(team.getProject());
+        newVersionMember.setUser(team.getUser());
+
+        return projectTeamRepository.save(newVersionMember);
+
     }
 
     public ProjectTeam updateStatus(Long teamMemberId, String status) {
         ProjectTeam team = getProjectTeamById(teamMemberId);
-        team.setStatus(status);
-        return projectTeamRepository.save(team);
+
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof User user) {
+            team.setLastUpdatedBy(user.getEmail());
+            team.setEndTimestamp(LocalDateTime.now());
+        }
+
+        ProjectTeam newVersionMember = new ProjectTeam();
+        newVersionMember.setPricing(team.getPricing());
+        newVersionMember.setUnit(team.getUnit());
+        newVersionMember.setEstimatedReleaseDate(team.getEstimatedReleaseDate());
+        newVersionMember.setEmpCode(team.getEmpCode());
+        newVersionMember.setStatus(status);
+        newVersionMember.setTaskType(team.getTaskType());
+        newVersionMember.setStartTimestamp(LocalDateTime.now());
+        newVersionMember.setProject(team.getProject());
+        newVersionMember.setUser(team.getUser());
+
+        return projectTeamRepository.save(newVersionMember);
     }
 
     public void deleteProjectTeam(Long id) {
         ProjectTeam team = getProjectTeamById(id);
-        projectTeamRepository.delete(team);
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof User user) {
+            team.setLastUpdatedBy(user.getEmail());
+            team.setEndTimestamp(LocalDateTime.now());
+        }
+        projectTeamRepository.save(team);
+//        projectTeamRepository.delete(team);
     }
 
     public List<ProjectTeam> getProjectTeam(Long projectId) {
-        return projectTeamRepository.findByProjectProjectId(projectId);
+        return projectTeamRepository.findByProjectProjectIdAndEndTimestampIsNull(projectId);
     }
 
 }
