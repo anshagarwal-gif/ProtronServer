@@ -73,7 +73,7 @@ public class ManageTeamService {
         newVersionMember.setEstimatedReleaseDate(dto.getEstimatedReleaseDate());
         newVersionMember.setEmpCode(team.getEmpCode());
         newVersionMember.setStatus(team.getStatus());
-        newVersionMember.setTaskType(team.getTaskType());
+        newVersionMember.setTaskType(dto.getTaskType());
         newVersionMember.setStartTimestamp(LocalDateTime.now());
         newVersionMember.setProject(team.getProject());
         newVersionMember.setUser(team.getUser());
@@ -113,7 +113,7 @@ public class ManageTeamService {
             team.setEndTimestamp(LocalDateTime.now());
         }
         projectTeamRepository.save(team);
-//        projectTeamRepository.delete(team);
+        // projectTeamRepository.delete(team);
     }
 
     public List<ProjectTeam> getProjectTeam(Long projectId) {

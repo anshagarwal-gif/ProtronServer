@@ -12,6 +12,7 @@ public class TeamMemberEditDTO {
 
     private Double pricing;
     private String unit;
+    private String taskType;
 
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate estimatedReleaseDate;
@@ -38,5 +39,13 @@ public class TeamMemberEditDTO {
 
     public void setEstimatedReleaseDate(LocalDate estimatedReleaseDate) {
         this.estimatedReleaseDate = estimatedReleaseDate;
+    }
+
+    public String getTaskType() {
+        return taskType;
+    }
+
+    public void setTaskType(String taskType) {
+        this.taskType = taskType;
     }
 }
