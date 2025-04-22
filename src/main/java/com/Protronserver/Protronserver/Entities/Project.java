@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Where;
 
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -77,6 +78,7 @@ public class Project {
     private List<TimesheetTask> timesheetTasks;
 
     @OneToMany(mappedBy = "project")
+    @Where(clause = "end_timestamp IS NULL")
     @JsonIgnoreProperties("project")
     private List<ProjectTeam> projectTeam;
 

@@ -106,6 +106,7 @@ public class ManageProjectService {
         updatedProject.setProjectCost(request.getProjectCost() != null ? request.getProjectCost() : existingProject.getProjectCost());
         updatedProject.setStartTimestamp(LocalDateTime.now());
         updatedProject.setEndTimestamp(null);
+//        updatedProject.setProjectTeam(existingProject.getProjectTeam());
 
         // Set manager if ID is passed
         if (request.getProjectManagerId() != null) {
@@ -114,6 +115,11 @@ public class ManageProjectService {
             updatedProject.setProjectManager(manager);
         } else {
             updatedProject.setProjectManager(existingProject.getProjectManager());
+        }
+
+        List<ProjectTeam> projectTeams = existingProject.getProjectTeam();
+        for(ProjectTeam team : projectTeams){
+            team.setProject(updatedProject);
         }
 
         // Save new project
